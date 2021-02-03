@@ -3,6 +3,7 @@ import 'package:af/application/hardware_singleton.dart';
 import 'package:af/application/simple_recorder.dart';
 import 'package:af/application/states_singleton.dart';
 import 'package:af/presentation/floating_menue_widget.dart';
+import 'package:af/presentation/settings_menue_widget.dart';
 import 'package:af/presentation/slider_widget.dart';
 import 'package:af/presentation/widgetless_boxes.dart';
 import 'package:camera/camera.dart';
@@ -89,7 +90,8 @@ Widget stackCameraAndOverlay(BuildContext context, GlobalKey gridKey) {
       getWidgetlessBoxes(context),
       Positioned(bottom: 5, child: Center(child: FloatingMenue())),
       buildSlider(context),
-      SimpleRecorder()
+      SimpleRecorder(),
+      SettingsMenueWidget(),
     ],
   );
 }

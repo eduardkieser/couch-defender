@@ -39,7 +39,7 @@ flutter:
   uses-material-design: true
 
   assets:
-  #  - assets/yolov2_tiny.tflite
-  #  - assets/yolov2_tiny.txt
+   - assets/yolov2_tiny.tflite
+   - assets/yolov2_tiny.txt
    - assets/ssd_mobilenet.tflite
    - assets/ssd_mobilenet.txt

@@ -27,11 +27,17 @@ class StatesSingleton extends ChangeNotifier {
 
   bool showRecordingUi = false;
 
+  bool isShowingSettingsMenue = false;
+
+  bool isShowingFloatingMenue = true;
+
   bool isPlayingWarning = false;
 
   bool isDetecting = false;
 
   double certaintyThreshold = 0.5;
+
+  String selectedModelString = 'SSD';
 
   void clearSnapshot() {
     _previewImageBytes = null;
@@ -44,6 +50,23 @@ class StatesSingleton extends ChangeNotifier {
 
   set previewImageBytes(List<int> bytes) {
     _previewImageBytes = bytes;
+    notifyListeners();
+  }
+
+  void showSettingsMenue(){
+    isShowingSettingsMenue = true;
+    isShowingFloatingMenue = false;
+    notifyListeners();
+  }
+
+  void hideSettingsMenue(){
+    isShowingSettingsMenue = false;
+    isShowingFloatingMenue = true;
+    notifyListeners();
+  }
+
+  void setModelString(String newModelString){
+    selectedModelString = newModelString;
     notifyListeners();
   }
 

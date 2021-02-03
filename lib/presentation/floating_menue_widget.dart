@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 class FloatingMenue extends StatelessWidget {
   const FloatingMenue({Key key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildFloatingMenue(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -24,14 +23,6 @@ class FloatingMenue extends StatelessWidget {
             },
             icon: Icon(Icons.clear),
           ),
-          // IconButton(
-          //   onPressed: () {
-          //     Provider.of<HardwareSingleton>(context, listen: false)
-          //         .hackyDoubleSnapshot();
-          //     Provider.of<GridModel>(context, listen: false).poke();
-          //   },
-          //   icon: Icon(Icons.image),
-          // ),
           IconButton(
             onPressed: () {
               Provider.of<GridModel>(context, listen: false).toggleSetTo();
@@ -70,14 +61,21 @@ class FloatingMenue extends StatelessWidget {
             },
             icon: Icon(Icons.music_note),
           ),
-          // IconButton(
-          //   onPressed: () {
-          //     HardwareSingleton().playWarning(0);
-          //   },
-          //   icon: Icon(Icons.speaker),
-          // )
+          IconButton(
+            onPressed: () {
+              StatesSingleton().showSettingsMenue();
+            },
+            icon: Icon(Icons.menu),
+          )
         ],
       ),
     );
+  }
+
+  @override
+  build(BuildContext context){
+    return StatesSingleton().isShowingFloatingMenue?
+    buildFloatingMenue(context):
+    Container();
   }
 }

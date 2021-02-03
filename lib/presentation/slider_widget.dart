@@ -13,7 +13,7 @@ buildSlider(BuildContext context) {
       value: HardwareSingleton().certaintyThreshold,
       min: 0,
       max: 1,
-      divisions: 20,
+      divisions: 10,
       label: HardwareSingleton().certaintyThreshold.toString(),
       onChanged: (double value) {
         HardwareSingleton().certaintyThreshold = value;

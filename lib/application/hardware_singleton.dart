@@ -44,18 +44,16 @@ class HardwareSingleton extends ChangeNotifier {
 
   Future loadModel() async {
     Tflite.close();
-    const String ssd = "SSD MobileNet";
-    const String yolo = "Tiny YOLOv2";
-    String _model = ssd;
     String res;
     try {
-      switch (_model) {
-        case yolo:
+      switch (StatesSingleton().selectedModelString) {
+        case 'YOLO':
           res = await Tflite.loadModel(
             model: "assets/yolov2_tiny.tflite",
             labels: "assets/yolov2_tiny.txt",
             // useGpuDelegate: true,
           );
+          print('Loaded yolo model');
           break;
         default:
           res = await Tflite.loadModel(
@@ -63,6 +61,7 @@ class HardwareSingleton extends ChangeNotifier {
             labels: "assets/ssd_mobilenet.txt",
             // useGpuDelegate: true,
           );
+          print('Loaded ssd model');
           break;
       }
     } on PlatformException {
@@ -131,7 +130,7 @@ class HardwareSingleton extends ChangeNotifier {
   //   return null;
   // }
 
-  Future<void> startReadingSSD(context) {
+  Future<void> startReadingImages(context) {
     if (controller.value.isStreamingImages) {
       return null;
     }
@@ -141,20 +140,9 @@ class HardwareSingleton extends ChangeNotifier {
         lastDetection = DateTime.now();
         StatesSingleton().isDetecting = true;
         Provider.of<GridModel>(context, listen: false).poke();
-        var recognitions = await Tflite.detectObjectOnFrame(
-          bytesList: img.planes.map((plane) {
-            return plane.bytes;
-          }).toList(), // required
-          model: "SSDMobileNet",
-          imageHeight: img.height,
-          imageWidth: img.width,
-          imageMean: 127.5, // defaults to 127.5
-          imageStd: 127.5, // defaults to 127.5
-          rotation: 90, // defaults to 90, Android only
-          threshold: certaintyThreshold, // defaults to 0.1
-          asynch: true, // defaults to true
-          // numResultsPerClass: 2
-        );
+        
+        var recognitions = await runModel(img);
+
         StatesSingleton statesSingleton = StatesSingleton();
         //Parse recognitions will return true if an infraction is detected in the image;
         bool didDetectInfraction =
@@ -172,9 +160,59 @@ class HardwareSingleton extends ChangeNotifier {
     return null;
   }
 
+  Future<List<dynamic>> runSSD(CameraImage img)async{
+    var recognitions = await Tflite.detectObjectOnFrame(
+          bytesList: img.planes.map((plane) {
+            return plane.bytes;
+          }).toList(), // required
+          model: "SSDMobileNet",
+          imageHeight: img.height,
+          imageWidth: img.width,
+          imageMean: 127.5, // defaults to 127.5
+          imageStd: 127.5, // defaults to 127.5
+          rotation: 90, // defaults to 90, Android only
+          threshold: certaintyThreshold, // defaults to 0.1
+          asynch: true, // defaults to true
+          // numResultsPerClass: 2
+        );
+    return recognitions;
+  }
+
+  Future<List<dynamic>> runYOLO(CameraImage img)async{
+          var recognitions = await Tflite.detectObjectOnFrame(
+            bytesList: img.planes.map((plane) {
+              return plane.bytes;
+            }).toList(), // required
+            model: "YOLO",
+            imageHeight: img.height,
+            imageWidth: img.width,
+            imageMean: 0, // defaults to 127.5
+            imageStd: 255.0, // defaults to 127.5
+            // numResults: 2,        // defaults to 5
+            threshold: 0.1, // defaults to 0.1
+            numResultsPerClass: 2, // defaults to 5
+            // anchors: anchors,     // defaults to [0.57273,0.677385,1.87446,2.06253,3.33843,5.47434,7.88282,3.52778,9.77052,9.16828]
+            blockSize: 32, // defaults to 32
+            numBoxesPerBlock: 5, // defaults to 5
+            asynch: true);
+            return recognitions;
+  }
+
   void startReading(context) {
-    startReadingSSD(context);
-    // startReadingYOLO(context);
+    startReadingImages(context);
+  }
+
+  Future<List<dynamic>> runModel(CameraImage img){
+    if(StatesSingleton().selectedModelString=='SSD'){
+      return runSSD(img);
+    }
+    else if (StatesSingleton().selectedModelString=='YOLO'){
+      return runYOLO(img);
+    }
+    else{
+      print('Invalid Model Selection String!!');
+      throw Error();
+    }
   }
 
   Future<void> hackyDoubleSnapshot() async {
