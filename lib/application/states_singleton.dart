@@ -39,6 +39,8 @@ class StatesSingleton extends ChangeNotifier {
 
   String selectedModelString = 'SSD';
 
+  double delayPeriod = 3;
+
   void clearSnapshot() {
     _previewImageBytes = null;
     notifyListeners();

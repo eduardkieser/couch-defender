@@ -96,47 +96,13 @@ class HardwareSingleton extends ChangeNotifier {
     }
   }
 
-  // Future<void> startReadingYOLO(context) {
-  //   if (controller.value.isStreamingImages) {
-  //     return null;
-  //   }
-  //   controller.startImageStream((CameraImage img) async {
-  //     if (!StatesSingleton().isDetecting) {
-  //       StatesSingleton().isDetecting = true;
-  //       var recognitions = await Tflite.detectObjectOnFrame(
-  //           bytesList: img.planes.map((plane) {
-  //             return plane.bytes;
-  //           }).toList(), // required
-  //           model: "YOLO",
-  //           imageHeight: img.height,
-  //           imageWidth: img.width,
-  //           imageMean: 0, // defaults to 127.5
-  //           imageStd: 255.0, // defaults to 127.5
-  //           // numResults: 2,        // defaults to 5
-  //           threshold: 0.1, // defaults to 0.1
-  //           numResultsPerClass: 2, // defaults to 5
-  //           // anchors: anchors,     // defaults to [0.57273,0.677385,1.87446,2.06253,3.33843,5.47434,7.88282,3.52778,9.77052,9.16828]
-  //           blockSize: 32, // defaults to 32
-  //           numBoxesPerBlock: 5, // defaults to 5
-  //           asynch: true);
-
-  //       StatesSingleton statesSingleton = StatesSingleton();
-  //       statesSingleton.parseRecognitions(recognitions, context);
-  //       notifyListeners();
-  //       Provider.of<GridModel>(context, listen: false).poke();
-  //       StatesSingleton().isDetecting = false;
-  //     }
-  //   });
-  //   return null;
-  // }
-
   Future<void> startReadingImages(context) {
     if (controller.value.isStreamingImages) {
       return null;
     }
     controller.startImageStream((CameraImage img) async {
       timeSinceLastDetection = DateTime.now().difference(lastDetection);
-      if (!StatesSingleton().isDetecting && (timeSinceLastDetection>Duration(seconds: 3))) {
+      if (!StatesSingleton().isDetecting && (timeSinceLastDetection>Duration(seconds: StatesSingleton().delayPeriod.round()))) {
         lastDetection = DateTime.now();
         StatesSingleton().isDetecting = true;
         Provider.of<GridModel>(context, listen: false).poke();
