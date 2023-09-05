@@ -1,16 +1,8 @@
-# couch_defender
+# The Couch Defender
 
-A new Flutter project.
+A way to use your smart phone to keep your pets off your couch.
 
-## Getting Started
+## Project revival
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This project has been on the shelf for a while, let's dust it off.
+Some documentation [here](https://eduardkieser.github.io/couch-defender-app.html).
